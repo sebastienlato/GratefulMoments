@@ -12,12 +12,12 @@ import SwiftData
 struct MomentDetailView: View {
     var moment: Moment
     @State private var showConfirmation = false
-
-
+    
+    
     @Environment(\.dismiss) private var dismiss
     @Environment(DataContainer.self) private var dataContainer
-
-
+    
+    
     var body: some View {
         ScrollView {
             contentStack
@@ -42,8 +42,8 @@ struct MomentDetailView: View {
             }
         }
     }
-
-
+    
+    
     private var contentStack: some View {
         VStack(alignment: .leading) {
             Text(moment.timestamp, style: .date)
