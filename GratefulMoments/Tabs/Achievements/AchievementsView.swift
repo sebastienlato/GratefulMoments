@@ -12,12 +12,12 @@ import SwiftData
 struct AchievementsView: View {
     @Query(filter: #Predicate<Badge> { $0.timestamp != nil })
     private var unlockedBadges: [Badge]
-    
-    
+
+
     @Query(filter: #Predicate<Badge> { $0.timestamp == nil })
     private var lockedBadges: [Badge]
-    
-    
+
+
     var body: some View {
         NavigationStack {
             ScrollView {
@@ -26,39 +26,49 @@ struct AchievementsView: View {
             .navigationTitle("Achievements")
         }
     }
-    
-    
+
+
     private var contentStack: some View {
-        VStack {
-            header("Your Badges")
-            ForEach(sortedUnlockedBadges) { badge in
-                Text(badge.details.title)
+        VStack(alignment: .leading) {
+            if !unlockedBadges.isEmpty {
+                header("Your Badges")
+                ScrollView(.horizontal) {
+                    HStack {
+                        ForEach(sortedUnlockedBadges) { badge in
+                            UnlockedBadgeView(badge: badge)
+                        }
+                    }
+                }
+                .scrollClipDisabled()
+                .scrollIndicators(.hidden)
             }
-            header("Locked Badges")
-            ForEach(sortedLockedBadges) { badge in
-                Text(badge.details.title)
+            if !lockedBadges.isEmpty {
+                header("Locked Badges")
+                ForEach(sortedLockedBadges) { badge in
+                    LockedBadgeView(badge: badge)
+                }
             }
         }
         .padding()
         .frame(maxWidth: .infinity)
     }
-    
-    
+
+
     func header(_ text: String) -> some View {
         Text(text)
             .font(.subheadline.bold())
             .padding()
     }
-    
-    
+
+
     /// - precondition: `unlockedBadges` must have a timestamp
     private var sortedUnlockedBadges: [Badge] {
         unlockedBadges.sorted {
             ($0.timestamp!, $0.details.title) < ($1.timestamp!, $1.details.title)
         }
     }
-    
-    
+
+
     private var sortedLockedBadges: [Badge] {
         lockedBadges.sorted {
             $0.details.rawValue < $1.details.rawValue
@@ -71,3 +81,4 @@ struct AchievementsView: View {
     AchievementsView()
         .sampleDataContainer()
 }
+
